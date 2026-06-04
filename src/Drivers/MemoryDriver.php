@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Nexph\Runtime\Queue\Drivers;
+namespace Nexph\Queue\Drivers;
 
 use Nexph\Runtime\Queue\QueueDriver;
 use Nexph\Runtime\Queue\Job;
