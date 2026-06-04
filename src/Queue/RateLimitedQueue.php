@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Nexph\Runtime\Queue;
+namespace Nexph\Queue;
 
 use Nexph\Runtime\RateLimit\RateLimiter;
 
