@@ -186,6 +186,32 @@ class Queue {
         ];
     }
 
+    /**
+     * Get failed jobs from dead letter queue.
+     */
+    public function failed(int $limit = 100): array {
+        return $this->driver->getDeadLetters($limit);
+    }
+
+    /**
+     * Retry a failed job.
+     */
+    public function retry(string $jobId): bool {
+        $deadLetters = $this->driver->getDeadLetters(1000);
+        foreach ($deadLetters as $job) {
+            if ($job->id === $jobId) {
+                $job->status = JobStatus::PENDING;
+                $job->attempts = 0;
+                $job->available_at = time();
+                $job->error = null;
+                $job->failed_at = null;
+                $this->driver->push($job);
+                return true;
+            }
+        }
+        return false;
+    }
+
     public function workOnce(int $workerId = 1): bool {
         $job = $this->driver->pop();
 
