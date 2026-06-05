@@ -40,7 +40,7 @@ class QueueWorker {
         // Create worker owner
         if (class_exists('\Nexph\Runtime\Runtime') && \Nexph\Runtime\Runtime::available()) {
             $this->workerOwner = \Nexph\Runtime\Runtime::owners()->open(
-                \Nexph\Runtime\Ownership\OwnerType::WORKER,
+                \Nexph\Core\Ownership\OwnerType::WORKER,
                 null,
                 ['pid' => getmypid(), 'started_at' => $this->startTime]
             );
@@ -88,7 +88,7 @@ class QueueWorker {
      * Process next available job.
      */
     private function processNextJob(): void {
-        $drain = \Nexph\Runtime\Drain\DrainController::instance();
+        $drain = \Nexph\Core\Drain\DrainController::instance();
         
         if ($drain->isDraining() || $drain->isStopped()) {
             echo "[QueueWorker] Drain active, stopping job processing\n";

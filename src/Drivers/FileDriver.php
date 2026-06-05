@@ -52,9 +52,9 @@ class FileDriver implements QueueDriver {
         }
         
         // Track file handle (skip if not object in PHP 8.0)
-        if (class_exists('\Nexph\Runtime\Resource\ResourceRegistry') && class_exists('\Nexph\Runtime\Runtime') && \Nexph\Runtime\Runtime::available()) {
+        if (class_exists('\Nexph\Core\Resource\ResourceRegistry') && class_exists('\Nexph\Runtime\Runtime') && \Nexph\Runtime\Runtime::available()) {
             if (is_object($fp)) {
-                \Nexph\Runtime\Resource\ResourceRegistry::instance()->track(
+                \Nexph\Core\Resource\ResourceRegistry::instance()->track(
                     $fp,
                     'file_handle',
                     \Nexph\Runtime\Runtime::context()->ownerId()

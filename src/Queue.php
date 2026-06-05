@@ -137,8 +137,8 @@ class Queue {
         $this->running = false;
         
         // Integrate with DrainController
-        if (class_exists('\Nexph\Runtime\Drain\DrainController')) {
-            $drainController = \Nexph\Runtime\Drain\DrainController::instance();
+        if (class_exists('\Nexph\Core\Drain\DrainController')) {
+            $drainController = \Nexph\Core\Drain\DrainController::instance();
             $drainController->stopAccepting();
             
             // Wait for in-flight jobs with timeout
@@ -330,14 +330,14 @@ class Queue {
         if (Runtime::available()) {
             $parentOwnerId = $contextData['owner_id'] ?? null;
             $jobOwner = Runtime::owners()->open(
-                \Nexph\Runtime\Ownership\OwnerType::QUEUE_JOB,
+                \Nexph\Core\Ownership\OwnerType::QUEUE_JOB,
                 $parentOwnerId ? Runtime::owners()->get($parentOwnerId)?->id() : null,
                 ['job_id' => $job->id, 'job_name' => $job->name, 'worker_id' => $workerId]
             );
             
             // Track in-flight
-            if (class_exists('\Nexph\Runtime\Drain\DrainController')) {
-                \Nexph\Runtime\Drain\DrainController::instance()->trackInFlight($jobOwner->id());
+            if (class_exists('\Nexph\Core\Drain\DrainController')) {
+                \Nexph\Core\Drain\DrainController::instance()->trackInFlight($jobOwner->id());
             }
         }
         
@@ -358,8 +358,8 @@ class Queue {
             $restoreContext(function() use ($job, $workerId, $startTime) {
                 try {
                     // Check drain state before executing
-                    if (class_exists('\Nexph\Runtime\Drain\DrainController')) {
-                        $drainController = \Nexph\Runtime\Drain\DrainController::instance();
+                    if (class_exists('\Nexph\Core\Drain\DrainController')) {
+                        $drainController = \Nexph\Core\Drain\DrainController::instance();
                         if (!$drainController->isAccepting()) {
                             throw new \RuntimeException('Queue is draining, job rejected');
                         }
@@ -413,8 +413,8 @@ class Queue {
         } finally {
             if ($jobOwner) {
                 // Finish in-flight tracking
-                if (class_exists('\Nexph\Runtime\Drain\DrainController')) {
-                    \Nexph\Runtime\Drain\DrainController::instance()->finishInFlight($jobOwner->id());
+                if (class_exists('\Nexph\Core\Drain\DrainController')) {
+                    \Nexph\Core\Drain\DrainController::instance()->finishInFlight($jobOwner->id());
                 }
                 $jobOwner->close('job_completed');
             }

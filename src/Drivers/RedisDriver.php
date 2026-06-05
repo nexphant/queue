@@ -30,8 +30,8 @@ class RedisDriver implements QueueDriver {
         $this->maxPayloadSize = $maxPayloadSize;
         
         // Track Redis connection
-        if (class_exists('\Nexph\Runtime\Resource\ResourceRegistry') && class_exists('\Nexph\Runtime\Runtime') && \Nexph\Runtime\Runtime::available()) {
-            \Nexph\Runtime\Resource\ResourceRegistry::instance()->track(
+        if (class_exists('\Nexph\Core\Resource\ResourceRegistry') && class_exists('\Nexph\Runtime\Runtime') && \Nexph\Runtime\Runtime::available()) {
+            \Nexph\Core\Resource\ResourceRegistry::instance()->track(
                 $redis,
                 'redis_connection',
                 \Nexph\Runtime\Runtime::context()->ownerId()
