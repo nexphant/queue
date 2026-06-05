@@ -2,8 +2,8 @@
 
 namespace Nexph\Queue\Drivers;
 
-use Nexph\Runtime\Queue\Job;
-use Nexph\Runtime\Queue\QueueDriver;
+use Nexph\Queue\Job;
+use Nexph\Queue\QueueDriver;
 
 class ApcuRingDriver implements QueueDriver {
     private string $prefix;

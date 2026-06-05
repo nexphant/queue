@@ -10,8 +10,8 @@
  */
 namespace Nexph\Queue\Drivers;
 
-use Nexph\Runtime\Queue\QueueDriver;
-use Nexph\Runtime\Queue\Job;
+use Nexph\Queue\QueueDriver;
+use Nexph\Queue\Job;
 
 class RedisDriver implements QueueDriver {
     private \Redis $redis;
