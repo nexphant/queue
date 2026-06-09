@@ -326,6 +326,7 @@ class Queue {
         // Restore context if available and create queue_job owner
         $contextData = $job->metadata['_context'] ?? null;
         $jobOwner = null;
+        $lifecycleOwner = class_exists('\Nexph\Lifecycle\Lifecycle') ? \Nexph\Lifecycle\Lifecycle::job($job) : null;
         
         if (Runtime::available()) {
             $parentOwnerId = $contextData['owner_id'] ?? null;
@@ -355,7 +356,7 @@ class Queue {
         };
         
         try {
-            $restoreContext(function() use ($job, $workerId, $startTime) {
+            $restoreContext(function() use ($job, $workerId, $startTime, $lifecycleOwner) {
                 try {
                     // Check drain state before executing
                     if (class_exists('\Nexph\Core\Drain\DrainController')) {
@@ -384,7 +385,7 @@ class Queue {
                         }
                     }
                     
-                    $result = $this->executeWithTimeout($handlerInstance ?? $handler, $job);
+                    $result = $this->executeWithTimeout($handlerInstance ?? $handler, $job, $lifecycleOwner);
                     
                     $job->status = JobStatus::COMPLETED;
                     $job->completed_at = time();
@@ -418,23 +419,24 @@ class Queue {
                 }
                 $jobOwner->close('job_completed');
             }
+            $lifecycleOwner?->close();
         }
     }
     
     /**
      * Execute handler with timeout protection.
      */
-    private function executeWithTimeout(callable|string|object $handler, Job $job): mixed {
+    private function executeWithTimeout(callable|string|object $handler, Job $job, mixed $ctx = null): mixed {
         if (is_string($handler)) {
             $handler = new $handler();
         }
         
         if (is_callable($handler)) {
-            return $handler($job->payload, $job);
+            return $handler($job->payload, $job, $ctx);
         }
         
         if (is_object($handler) && method_exists($handler, 'handle')) {
-            return $handler->handle($job->payload, $job);
+            return $handler->handle($job->payload, $job, $ctx);
         }
         
         throw new \RuntimeException("Invalid handler for job: {$job->name}");
