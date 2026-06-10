@@ -83,4 +83,9 @@ class QueueRuntime
         $this->running = false;
         $this->channel->close();
     }
+
+    public function metrics(): array
+    {
+        return $this->executor->metrics();
+    }
 }
