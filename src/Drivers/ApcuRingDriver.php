@@ -24,6 +24,7 @@ class ApcuRingDriver implements QueueDriver {
     }
 
     public function push(Job $job): void {
+        Job::assertValidId($job->id);
         $data = json_encode($job->toArray());
         if ($data === false || strlen($data) > $this->maxPayloadSize) {
             throw new \RuntimeException('Job payload exceeds max size');
@@ -75,6 +76,7 @@ class ApcuRingDriver implements QueueDriver {
     }
 
     public function update(Job $job): void {
+        Job::assertValidId($job->id);
         $data = json_encode($job->toArray());
         if ($data !== false) {
             apcu_store($this->jobKey($job->id), $data);
@@ -82,6 +84,7 @@ class ApcuRingDriver implements QueueDriver {
     }
 
     public function get(string $id): ?Job {
+        Job::assertValidId($id);
         $data = apcu_fetch($this->jobKey($id));
         if (!is_string($data) || $data === '') {
             return null;
@@ -97,6 +100,7 @@ class ApcuRingDriver implements QueueDriver {
     }
 
     public function delete(string $id): void {
+        Job::assertValidId($id);
         apcu_delete($this->jobKey($id));
     }
 
@@ -107,6 +111,7 @@ class ApcuRingDriver implements QueueDriver {
     }
 
     public function pushDeadLetter(Job $job): void {
+        Job::assertValidId($job->id);
         $job->failed_at ??= time();
         $this->update($job);
         $dead = apcu_fetch($this->deadLetterKey()) ?: [];

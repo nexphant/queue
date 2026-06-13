@@ -43,6 +43,7 @@ class RedisDriver implements QueueDriver
 
     public function push(Job $job): void
     {
+        Job::assertValidId($job->id);
         $data = json_encode($job->toArray());
         if (strlen($data) > $this->maxPayloadSize) {
             throw new \RuntimeException("Job payload exceeds max size: " . strlen($data) . " bytes");
@@ -88,6 +89,7 @@ class RedisDriver implements QueueDriver
 
     public function update(Job $job): void
     {
+        Job::assertValidId($job->id);
         $key = $this->dataPrefix . $job->id;
         $data = json_encode($job->toArray());
         $this->redis->set($key, $data);
@@ -99,6 +101,7 @@ class RedisDriver implements QueueDriver
 
     public function get(string $id): ?Job
     {
+        Job::assertValidId($id);
         $key = $this->dataPrefix . $id;
         $data = $this->redis->get($key);
 
@@ -116,6 +119,7 @@ class RedisDriver implements QueueDriver
 
     public function delete(string $id): void
     {
+        Job::assertValidId($id);
         $key = $this->dataPrefix . $id;
         $this->redis->del($key);
         $this->redis->zRem($this->queueKey, $id);
@@ -130,6 +134,7 @@ class RedisDriver implements QueueDriver
 
     public function pushDeadLetter(Job $job): void
     {
+        Job::assertValidId($job->id);
         $key = $this->dataPrefix . $job->id;
         $this->redis->set($key, json_encode($job->toArray()));
         $this->redis->zAdd($this->deadLetterKey, $job->failed_at ?? time(), $job->id);

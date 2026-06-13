@@ -27,13 +27,14 @@ class DatabaseDriver implements QueueDriver
     public function __construct(\PDO $pdo, string $table = 'queue_jobs', string $deadLetterTable = 'queue_dead_letters')
     {
         $this->pdo = $pdo;
-        $this->table = $table;
-        $this->deadLetterTable = $deadLetterTable;
+        $this->table = $this->quoteIdentifier($table);
+        $this->deadLetterTable = $this->quoteIdentifier($deadLetterTable);
         $this->ensureTables();
     }
 
     public function push(Job $job): void
     {
+        Job::assertValidId($job->id);
         $stmt = $this->pdo->prepare("
             INSERT INTO {$this->table} 
             (id, name, payload, status, attempts, max_attempts, timeout, created_at, available_at)
@@ -124,6 +125,7 @@ class DatabaseDriver implements QueueDriver
 
     public function get(string $id): ?Job
     {
+        Job::assertValidId($id);
         $stmt = $this->pdo->prepare("SELECT * FROM {$this->table} WHERE id = ?");
         $stmt->execute([$id]);
         $row = $stmt->fetch(\PDO::FETCH_ASSOC);
@@ -133,6 +135,7 @@ class DatabaseDriver implements QueueDriver
 
     public function delete(string $id): void
     {
+        Job::assertValidId($id);
         $stmt = $this->pdo->prepare("DELETE FROM {$this->table} WHERE id = ?");
         $stmt->execute([$id]);
     }
@@ -150,6 +153,7 @@ class DatabaseDriver implements QueueDriver
 
     public function pushDeadLetter(Job $job): void
     {
+        Job::assertValidId($job->id);
         $stmt = $this->pdo->prepare("
             INSERT INTO {$this->deadLetterTable}
             (id, name, payload, status, attempts, max_attempts, timeout, created_at, 
@@ -267,5 +271,13 @@ class DatabaseDriver implements QueueDriver
         $this->pdo->exec("
             CREATE INDEX IF NOT EXISTS idx_failed_at ON {$this->deadLetterTable} (failed_at)
         ");
+    }
+
+    private function quoteIdentifier(string $identifier): string
+    {
+        if (!preg_match('/^[A-Za-z_][A-Za-z0-9_]*$/', $identifier)) {
+            throw new \InvalidArgumentException('Invalid table name');
+        }
+        return "`{$identifier}`";
     }
 }

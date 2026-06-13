@@ -44,6 +44,7 @@ class FileDriver implements QueueDriver
 
     public function push(Job $job): void
     {
+        Job::assertValidId($job->id);
         $data = json_encode($job->toArray());
         if (strlen($data) > $this->maxPayloadSize) {
             throw new \RuntimeException("Job payload exceeds max size: " . strlen($data) . " bytes");
@@ -121,12 +122,14 @@ class FileDriver implements QueueDriver
 
     public function update(Job $job): void
     {
+        Job::assertValidId($job->id);
         $file = $this->queueDir . '/' . $job->id . '.json';
         file_put_contents($file, json_encode($job->toArray()), LOCK_EX);
     }
 
     public function get(string $id): ?Job
     {
+        Job::assertValidId($id);
         $file = $this->queueDir . '/' . $id . '.json';
 
         if (!file_exists($file)) {
@@ -144,6 +147,7 @@ class FileDriver implements QueueDriver
 
     public function delete(string $id): void
     {
+        Job::assertValidId($id);
         $file = $this->queueDir . '/' . $id . '.json';
         if (file_exists($file)) {
             unlink($file);
@@ -172,6 +176,7 @@ class FileDriver implements QueueDriver
 
     public function pushDeadLetter(Job $job): void
     {
+        Job::assertValidId($job->id);
         $file = $this->deadLetterDir . '/' . $job->id . '.json';
         file_put_contents($file, json_encode($job->toArray()), LOCK_EX);
         $this->delete($job->id);

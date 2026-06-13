@@ -33,6 +33,7 @@ class ApcuDriver implements QueueDriver
 
     public function push(Job $job): void
     {
+        Job::assertValidId($job->id);
         $data = json_encode($job->toArray());
         if (strlen($data) > $this->maxPayloadSize) {
             throw new \RuntimeException("Job payload exceeds max size: " . strlen($data) . " bytes");
@@ -79,6 +80,7 @@ class ApcuDriver implements QueueDriver
 
     public function update(Job $job): void
     {
+        Job::assertValidId($job->id);
         $key = $this->prefix . ':job:' . $job->id;
         $data = json_encode($job->toArray());
         apcu_store($key, $data);
@@ -92,6 +94,7 @@ class ApcuDriver implements QueueDriver
 
     public function get(string $id): ?Job
     {
+        Job::assertValidId($id);
         $key = $this->prefix . ':job:' . $id;
         $data = apcu_fetch($key);
 
@@ -109,6 +112,7 @@ class ApcuDriver implements QueueDriver
 
     public function delete(string $id): void
     {
+        Job::assertValidId($id);
         $key = $this->prefix . ':job:' . $id;
         apcu_delete($key);
 
@@ -134,6 +138,7 @@ class ApcuDriver implements QueueDriver
 
     public function pushDeadLetter(Job $job): void
     {
+        Job::assertValidId($job->id);
         $key = $this->prefix . ':job:' . $job->id;
         apcu_store($key, json_encode($job->toArray()));
 

@@ -33,6 +33,7 @@ class Job
 
     public function __construct(array $data)
     {
+        self::assertValidId((string) $data['id']);
         $this->id = $data['id'];
         $this->name = $data['name'];
         $this->payload = $data['payload'] ?? [];
@@ -80,5 +81,12 @@ class Job
     public static function fromArray(array $data): self
     {
         return new self($data);
+    }
+
+    public static function assertValidId(string $id): void
+    {
+        if (!preg_match('/^[A-Za-z0-9._-]{1,128}$/', $id)) {
+            throw new \InvalidArgumentException('Invalid job id');
+        }
     }
 }

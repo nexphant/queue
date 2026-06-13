@@ -25,6 +25,7 @@ class MemoryDriver implements QueueDriver
 
     public function push(Job $job): void
     {
+        Job::assertValidId($job->id);
         $this->jobs[$job->id] = $job;
     }
 
@@ -45,16 +46,19 @@ class MemoryDriver implements QueueDriver
 
     public function update(Job $job): void
     {
+        Job::assertValidId($job->id);
         $this->jobs[$job->id] = $job;
     }
 
     public function get(string $id): ?Job
     {
+        Job::assertValidId($id);
         return $this->jobs[$id] ?? null;
     }
 
     public function delete(string $id): void
     {
+        Job::assertValidId($id);
         unset($this->jobs[$id]);
     }
 
@@ -74,6 +78,7 @@ class MemoryDriver implements QueueDriver
 
     public function pushDeadLetter(Job $job): void
     {
+        Job::assertValidId($job->id);
         $this->deadLetters[$job->id] = $job;
     }
 
