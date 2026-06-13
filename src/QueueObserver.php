@@ -3,7 +3,7 @@
 /**
  * This file is part of the Nexph Framework.
  *
- * (c) Nexphlabs <https://github.com/nexphlabs>
+ * (c) nexphant <https://github.com/nexphant>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -17,25 +17,28 @@ use Nexph\Runtime\Runtime;
  * 
  * Tracks queue depth, worker health, throughput, and system metrics.
  */
-class QueueObserver {
+class QueueObserver
+{
     private Queue $queue;
     private float $lastLoopTime = 0;
     private bool $reporting = false;
-    
-    public function __construct(Queue $queue) {
+
+    public function __construct(Queue $queue)
+    {
         $this->queue = $queue;
     }
-    
+
     /**
      * Get comprehensive queue metrics.
      */
-    public function getMetrics(): array {
+    public function getMetrics(): array
+    {
         $queueMetrics = $this->queue->metrics()->toArray();
         $status = $this->queue->status();
         $counters = $queueMetrics['counters'];
         $timers = $queueMetrics['timers'];
         $computed = $queueMetrics['computed'];
-        
+
         return [
             'queue' => [
                 'depth' => $status['depth'],
@@ -63,28 +66,30 @@ class QueueObserver {
             ],
         ];
     }
-    
+
     /**
      * Get event loop lag (async mode only).
      */
-    private function getLoopLag(): float {
+    private function getLoopLag(): float
+    {
         if (!Runtime::available()) {
             return 0.0;
         }
-        
+
         $now = microtime(true);
         $lag = $this->lastLoopTime > 0 ? $now - $this->lastLoopTime : 0;
         $this->lastLoopTime = $now;
-        
+
         return $lag;
     }
-    
+
     /**
      * Print metrics to console.
      */
-    public function printMetrics(): void {
+    public function printMetrics(): void
+    {
         $metrics = $this->getMetrics();
-        
+
         echo "\n=== Queue Metrics ===\n";
         echo "Queue Depth: {$metrics['queue']['depth']}\n";
         echo "Active Workers: {$metrics['queue']['workers']}\n";
@@ -96,11 +101,12 @@ class QueueObserver {
         echo "Uptime: {$metrics['runtime']['uptime']}s\n";
         echo "====================\n\n";
     }
-    
+
     /**
      * Start periodic metrics reporting.
      */
-    public function startReporting(int $interval = 10): void {
+    public function startReporting(int $interval = 10): void
+    {
         if ($this->reporting) {
             return;
         }
@@ -108,7 +114,7 @@ class QueueObserver {
         $this->reporting = true;
 
         if (Runtime::available()) {
-            Runtime::spawn(function() use ($interval) {
+            Runtime::spawn(function () use ($interval) {
                 while ($this->reporting) {
                     Runtime::sleep($interval);
                     if (!$this->reporting) {
@@ -120,22 +126,24 @@ class QueueObserver {
         }
     }
 
-    public function stopReporting(): void {
+    public function stopReporting(): void
+    {
         $this->reporting = false;
     }
-    
+
     /**
      * Format bytes to human readable.
      */
-    private function formatBytes(int $bytes): string {
+    private function formatBytes(int $bytes): string
+    {
         $units = ['B', 'KB', 'MB', 'GB'];
         $i = 0;
-        
+
         while ($bytes >= 1024 && $i < count($units) - 1) {
             $bytes /= 1024;
             $i++;
         }
-        
+
         return round($bytes, 2) . ' ' . $units[$i];
     }
 }

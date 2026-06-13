@@ -3,7 +3,7 @@
 /**
  * This file is part of the Nexph Framework.
  *
- * (c) Nexphlabs <https://github.com/nexphlabs>
+ * (c) nexphant <https://github.com/nexphant>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -13,7 +13,8 @@ namespace Nexph\Queue;
 /**
  * Job data structure.
  */
-class Job {
+class Job
+{
     public string $id;
     public string $name;
     public array $payload;
@@ -29,8 +30,9 @@ class Job {
     public ?string $error = null;
     public mixed $result = null;
     public array $metadata = [];
-    
-    public function __construct(array $data) {
+
+    public function __construct(array $data)
+    {
         $this->id = $data['id'];
         $this->name = $data['name'];
         $this->payload = $data['payload'] ?? [];
@@ -47,11 +49,12 @@ class Job {
         $this->result = $data['result'] ?? null;
         $this->metadata = $data['metadata'] ?? [];
     }
-    
+
     /**
      * Convert to array.
      */
-    public function toArray(): array {
+    public function toArray(): array
+    {
         return [
             'id' => $this->id,
             'name' => $this->name,
@@ -70,11 +73,12 @@ class Job {
             'metadata' => $this->metadata,
         ];
     }
-    
+
     /**
      * Create from array.
      */
-    public static function fromArray(array $data): self {
+    public static function fromArray(array $data): self
+    {
         return new self($data);
     }
 }

@@ -3,7 +3,7 @@
 /**
  * This file is part of the Nexph Framework.
  *
- * (c) Nexphlabs <https://github.com/nexphlabs>
+ * (c) nexphant <https://github.com/nexphant>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -13,7 +13,8 @@ namespace Nexph\Queue;
 /**
  * Queue metrics tracker.
  */
-class QueueMetrics {
+class QueueMetrics
+{
     private int $enqueued = 0;
     private int $processing = 0;
     private int $completed = 0;
@@ -23,38 +24,45 @@ class QueueMetrics {
     private float $minDuration = PHP_FLOAT_MAX;
     private float $maxDuration = 0.0;
     private int $startTime;
-    
-    public function __construct() {
+
+    public function __construct()
+    {
         $this->startTime = time();
     }
-    
-    public function incrementEnqueued(): void {
+
+    public function incrementEnqueued(): void
+    {
         $this->enqueued++;
     }
-    
-    public function incrementProcessing(): void {
+
+    public function incrementProcessing(): void
+    {
         $this->processing++;
     }
-    
-    public function incrementCompleted(float $duration): void {
+
+    public function incrementCompleted(float $duration): void
+    {
         $this->completed++;
         $this->processing = max(0, $this->processing - 1);
         $this->totalDuration += $duration;
         $this->minDuration = min($this->minDuration, $duration);
         $this->maxDuration = max($this->maxDuration, $duration);
     }
-    
-    public function incrementFailed(): void {
+
+    public function incrementFailed(): void
+    {
         $this->failed++;
         $this->processing = max(0, $this->processing - 1);
     }
-    
-    public function incrementRetried(): void {
+
+    public function incrementRetried(): void
+    {
         $this->retried++;
         $this->processing = max(0, $this->processing - 1);
     }
-    
-    public function toArray(): array {
+
+    public function toArray(): array
+    {
         $avgDuration = $this->completed > 0 ? $this->totalDuration / $this->completed : 0;
         $uptime = time() - $this->startTime;
         $throughput = $uptime > 0 ? $this->completed / $uptime : 0;
@@ -62,7 +70,7 @@ class QueueMetrics {
         $successRate = $total > 0 ? ($this->completed / $total) * 100 : 0;
         $memoryUsage = memory_get_usage(true);
         $memoryPeak = memory_get_peak_usage(true);
-        
+
         return [
             'counters' => [
                 'jobs_enqueued' => $this->enqueued,
