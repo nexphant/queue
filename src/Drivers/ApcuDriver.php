@@ -1,17 +1,17 @@
 <?php
 
 /**
- * This file is part of the Nexph Framework.
+ * This file is part of the nexphant Framework.
  *
  * (c) nexphant <https://github.com/nexphant>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Nexph\Queue\Drivers;
+namespace nexphant\Queue\Drivers;
 
-use Nexph\Queue\QueueDriver;
-use Nexph\Queue\Job;
+use nexphant\Queue\QueueDriver;
+use nexphant\Queue\Job;
 
 class ApcuDriver implements QueueDriver
 {
@@ -20,7 +20,7 @@ class ApcuDriver implements QueueDriver
     private string $deadLetterKey;
     private int $maxPayloadSize;
 
-    public function __construct(string $prefix = 'nexph_queue', int $maxPayloadSize = 10485760)
+    public function __construct(string $prefix = 'nexphant_queue', int $maxPayloadSize = 10485760)
     {
         if (!extension_loaded('apcu') || !apcu_enabled()) {
             throw new \RuntimeException('APCu extension not available');

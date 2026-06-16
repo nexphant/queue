@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace Nexph\Queue;
+namespace nexphant\Queue;
 
-use Nexph\Runtime\RateLimit\RateLimiter;
+use nexphant\Runtime\RateLimit\RateLimiter;
 
 final class RateLimitedQueue
 {

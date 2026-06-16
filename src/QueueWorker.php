@@ -1,17 +1,17 @@
 <?php
 
 /**
- * This file is part of the Nexph Framework.
+ * This file is part of the nexphant Framework.
  *
  * (c) nexphant <https://github.com/nexphant>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Nexph\Queue;
+namespace nexphant\Queue;
 
-use Nexph\Runtime\Runtime;
-use Nexph\Runtime\Worker;
+use nexphant\Runtime\Runtime;
+use nexphant\Runtime\Worker;
 
 /**
  * Long-running queue worker process.
@@ -40,9 +40,9 @@ class QueueWorker
         $this->startTime = time();
 
         // Create worker owner
-        if (class_exists('\Nexph\Runtime\Runtime') && \Nexph\Runtime\Runtime::available()) {
-            $this->workerOwner = \Nexph\Runtime\Runtime::owners()->open(
-                \Nexph\Core\Ownership\OwnerType::WORKER,
+        if (class_exists('\nexphant\Runtime\Runtime') && \nexphant\Runtime\Runtime::available()) {
+            $this->workerOwner = \nexphant\Runtime\Runtime::owners()->open(
+                \nexphant\Core\Ownership\OwnerType::WORKER,
                 null,
                 ['pid' => getmypid(), 'started_at' => $this->startTime]
             );
@@ -93,7 +93,7 @@ class QueueWorker
      */
     private function processNextJob(): void
     {
-        $drain = \Nexph\Core\Drain\DrainController::instance();
+        $drain = \nexphant\Core\Drain\DrainController::instance();
 
         if ($drain->isDraining() || $drain->isStopped()) {
             echo "[QueueWorker] Drain active, stopping job processing\n";

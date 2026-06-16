@@ -1,11 +1,11 @@
-# Nexph Queue
+# nexphant Queue
 
-Background job processing for Nexph.
+Background job processing for nexphant.
 
 ## Installation
 
 ```bash
-composer require nexph/queue
+composer require nexphant/queue
 ```
 
 ## License

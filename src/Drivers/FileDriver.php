@@ -1,17 +1,17 @@
 <?php
 
 /**
- * This file is part of the Nexph Framework.
+ * This file is part of the nexphant Framework.
  *
  * (c) nexphant <https://github.com/nexphant>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Nexph\Queue\Drivers;
+namespace nexphant\Queue\Drivers;
 
-use Nexph\Queue\QueueDriver;
-use Nexph\Queue\Job;
+use nexphant\Queue\QueueDriver;
+use nexphant\Queue\Job;
 
 /**
  * File-based queue driver.
@@ -27,7 +27,7 @@ class FileDriver implements QueueDriver
 
     public function __construct(?string $basePath = null, int $maxPayloadSize = 10485760, int $maxFileSize = 52428800)
     {
-        $basePath = $basePath ?? sys_get_temp_dir() . '/nexph-queue';
+        $basePath = $basePath ?? sys_get_temp_dir() . '/nexphant-queue';
         $this->queueDir = $basePath . '/jobs';
         $this->deadLetterDir = $basePath . '/dead-letters';
         $this->maxPayloadSize = $maxPayloadSize;
@@ -56,12 +56,12 @@ class FileDriver implements QueueDriver
         }
 
         // Track file handle (skip if not object in PHP 8.0)
-        if (class_exists('\Nexph\Core\Resource\ResourceRegistry') && class_exists('\Nexph\Runtime\Runtime') && \Nexph\Runtime\Runtime::available()) {
+        if (class_exists('\nexphant\Core\Resource\ResourceRegistry') && class_exists('\nexphant\Runtime\Runtime') && \nexphant\Runtime\Runtime::available()) {
             if (is_object($fp)) {
-                \Nexph\Core\Resource\ResourceRegistry::instance()->track(
+                \nexphant\Core\Resource\ResourceRegistry::instance()->track(
                     $fp,
                     'file_handle',
-                    \Nexph\Runtime\Runtime::context()->ownerId()
+                    \nexphant\Runtime\Runtime::context()->ownerId()
                 );
             }
         }

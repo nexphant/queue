@@ -1,17 +1,17 @@
 <?php
 
 /**
- * This file is part of the Nexph Framework.
+ * This file is part of the nexphant Framework.
  *
  * (c) nexphant <https://github.com/nexphant>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Nexph\Queue;
+namespace nexphant\Queue;
 
-use Nexph\Runtime\Runtime;
-use Nexph\Runtime\Channel;
+use nexphant\Runtime\Runtime;
+use nexphant\Runtime\Channel;
 
 /**
  * Adaptive queue abstraction.
@@ -144,8 +144,8 @@ class Queue
         $this->running = false;
 
         // Integrate with DrainController
-        if (class_exists('\Nexph\Core\Drain\DrainController')) {
-            $drainController = \Nexph\Core\Drain\DrainController::instance();
+        if (class_exists('\nexphant\Core\Drain\DrainController')) {
+            $drainController = \nexphant\Core\Drain\DrainController::instance();
             $drainController->stopAccepting();
 
             // Wait for in-flight jobs with timeout
@@ -344,19 +344,19 @@ class Queue
         // Restore context if available and create queue_job owner
         $contextData = $job->metadata['_context'] ?? null;
         $jobOwner = null;
-        $lifecycleOwner = class_exists('\Nexph\Lifecycle\Lifecycle') ? \Nexph\Lifecycle\Lifecycle::job($job) : null;
+        $lifecycleOwner = class_exists('\nexphant\Lifecycle\Lifecycle') ? \nexphant\Lifecycle\Lifecycle::job($job) : null;
 
         if (Runtime::available()) {
             $parentOwnerId = $contextData['owner_id'] ?? null;
             $jobOwner = Runtime::owners()->open(
-                \Nexph\Core\Ownership\OwnerType::QUEUE_JOB,
+                \nexphant\Core\Ownership\OwnerType::QUEUE_JOB,
                 $parentOwnerId ? Runtime::owners()->get($parentOwnerId)?->id() : null,
                 ['job_id' => $job->id, 'job_name' => $job->name, 'worker_id' => $workerId]
             );
 
             // Track in-flight
-            if (class_exists('\Nexph\Core\Drain\DrainController')) {
-                \Nexph\Core\Drain\DrainController::instance()->trackInFlight($jobOwner->id());
+            if (class_exists('\nexphant\Core\Drain\DrainController')) {
+                \nexphant\Core\Drain\DrainController::instance()->trackInFlight($jobOwner->id());
             }
         }
 
@@ -377,8 +377,8 @@ class Queue
             $restoreContext(function () use ($job, $workerId, $startTime, $lifecycleOwner) {
                 try {
                     // Check drain state before executing
-                    if (class_exists('\Nexph\Core\Drain\DrainController')) {
-                        $drainController = \Nexph\Core\Drain\DrainController::instance();
+                    if (class_exists('\nexphant\Core\Drain\DrainController')) {
+                        $drainController = \nexphant\Core\Drain\DrainController::instance();
                         if (!$drainController->isAccepting()) {
                             throw new \RuntimeException('Queue is draining, job rejected');
                         }
@@ -432,8 +432,8 @@ class Queue
         } finally {
             if ($jobOwner) {
                 // Finish in-flight tracking
-                if (class_exists('\Nexph\Core\Drain\DrainController')) {
-                    \Nexph\Core\Drain\DrainController::instance()->finishInFlight($jobOwner->id());
+                if (class_exists('\nexphant\Core\Drain\DrainController')) {
+                    \nexphant\Core\Drain\DrainController::instance()->finishInFlight($jobOwner->id());
                 }
                 $jobOwner->close('job_completed');
             }

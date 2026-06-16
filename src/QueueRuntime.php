@@ -1,11 +1,11 @@
 <?php
 
-namespace Nexph\Queue;
+namespace nexphant\Queue;
 
-use Nexph\Runtime\Channel;
-use Nexph\Runtime\Runtime;
-use Nexph\Runtime\Backpressure\BoundedExecutor;
-use Nexph\Lifecycle\JobOwner;
+use nexphant\Runtime\Channel;
+use nexphant\Runtime\Runtime;
+use nexphant\Runtime\Backpressure\BoundedExecutor;
+use nexphant\Lifecycle\JobOwner;
 
 class QueueRuntime
 {
