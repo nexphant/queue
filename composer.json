@@ -1,6 +1,6 @@
 {
     "name": "nexphant/queue",
-    "description": "nexphant Queue - Background job processing",
+    "description": "Nexphant Queue - Background job processing",
     "type": "library",
     "license": "MIT",
     "autoload": {
