@@ -8,14 +8,14 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace nexphant\Queue;
+namespace Nexphant\Queue;
 
-use nexphant\Queue\Drivers\MemoryDriver;
-use nexphant\Queue\Drivers\FileDriver;
-use nexphant\Queue\Drivers\DatabaseDriver;
-use nexphant\Queue\Drivers\ApcuDriver;
-use nexphant\Queue\Drivers\ApcuRingDriver;
-use nexphant\Queue\Drivers\RedisDriver;
+use Nexphant\Queue\Drivers\MemoryDriver;
+use Nexphant\Queue\Drivers\FileDriver;
+use Nexphant\Queue\Drivers\DatabaseDriver;
+use Nexphant\Queue\Drivers\ApcuDriver;
+use Nexphant\Queue\Drivers\ApcuRingDriver;
+use Nexphant\Queue\Drivers\RedisDriver;
 
 class QueueFactory
 {
@@ -131,14 +131,14 @@ class QueueFactory
 
     private static function createApcuDriver(array $config): QueueDriver
     {
-        $prefix = $config['prefix'] ?? 'nexphant_queue';
+        $prefix = $config['prefix'] ?? 'NEXPHANT_queue';
         $maxPayloadSize = $config['max_payload_size'] ?? 10485760;
         return new ApcuDriver($prefix, $maxPayloadSize);
     }
 
     private static function createApcuRingDriver(array $config): QueueDriver
     {
-        $prefix = $config['prefix'] ?? 'nexphant_queue_ring';
+        $prefix = $config['prefix'] ?? 'NEXPHANT_queue_ring';
         $maxPayloadSize = $config['max_payload_size'] ?? 10485760;
         $scanLimit = $config['scan_limit'] ?? 1024;
         return new ApcuRingDriver($prefix, $maxPayloadSize, $scanLimit);
@@ -159,7 +159,7 @@ class QueueFactory
             throw new \InvalidArgumentException('Redis must be a Redis instance');
         }
 
-        $prefix = $config['prefix'] ?? 'nexphant_queue';
+        $prefix = $config['prefix'] ?? 'NEXPHANT_queue';
         $maxPayloadSize = $config['max_payload_size'] ?? 10485760;
 
         return new RedisDriver($redis, $prefix, $maxPayloadSize);

@@ -8,10 +8,10 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace nexphant\Queue\Drivers;
+namespace Nexphant\Queue\Drivers;
 
-use nexphant\Queue\QueueDriver;
-use nexphant\Queue\Job;
+use Nexphant\Queue\QueueDriver;
+use Nexphant\Queue\Job;
 
 /**
  * File-based queue driver.
@@ -56,12 +56,12 @@ class FileDriver implements QueueDriver
         }
 
         // Track file handle (skip if not object in PHP 8.0)
-        if (class_exists('\nexphant\Core\Resource\ResourceRegistry') && class_exists('\nexphant\Runtime\Runtime') && \nexphant\Runtime\Runtime::available()) {
+        if (class_exists('\Nexphant\Core\Resource\ResourceRegistry') && class_exists('\Nexphant\Runtime\Runtime') && \Nexphant\Runtime\Runtime::available()) {
             if (is_object($fp)) {
-                \nexphant\Core\Resource\ResourceRegistry::instance()->track(
+                \Nexphant\Core\Resource\ResourceRegistry::instance()->track(
                     $fp,
                     'file_handle',
-                    \nexphant\Runtime\Runtime::context()->ownerId()
+                    \Nexphant\Runtime\Runtime::context()->ownerId()
                 );
             }
         }

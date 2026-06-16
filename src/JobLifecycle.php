@@ -1,8 +1,8 @@
 <?php
 
-namespace nexphant\Queue;
+namespace Nexphant\Queue;
 
-use nexphant\Lifecycle\Lifecycle;
+use Nexphant\Lifecycle\Lifecycle;
 
 class JobLifecycle
 {

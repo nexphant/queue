@@ -8,10 +8,10 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace nexphant\Queue\Drivers;
+namespace Nexphant\Queue\Drivers;
 
-use nexphant\Queue\QueueDriver;
-use nexphant\Queue\Job;
+use Nexphant\Queue\QueueDriver;
+use Nexphant\Queue\Job;
 
 class ApcuDriver implements QueueDriver
 {
@@ -20,7 +20,7 @@ class ApcuDriver implements QueueDriver
     private string $deadLetterKey;
     private int $maxPayloadSize;
 
-    public function __construct(string $prefix = 'nexphant_queue', int $maxPayloadSize = 10485760)
+    public function __construct(string $prefix = 'NEXPHANT_queue', int $maxPayloadSize = 10485760)
     {
         if (!extension_loaded('apcu') || !apcu_enabled()) {
             throw new \RuntimeException('APCu extension not available');

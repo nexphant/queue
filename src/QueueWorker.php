@@ -8,10 +8,10 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace nexphant\Queue;
+namespace Nexphant\Queue;
 
-use nexphant\Runtime\Runtime;
-use nexphant\Runtime\Worker;
+use Nexphant\Runtime\Runtime;
+use Nexphant\Runtime\Worker;
 
 /**
  * Long-running queue worker process.
@@ -40,9 +40,9 @@ class QueueWorker
         $this->startTime = time();
 
         // Create worker owner
-        if (class_exists('\nexphant\Runtime\Runtime') && \nexphant\Runtime\Runtime::available()) {
-            $this->workerOwner = \nexphant\Runtime\Runtime::owners()->open(
-                \nexphant\Core\Ownership\OwnerType::WORKER,
+        if (class_exists('\Nexphant\Runtime\Runtime') && \Nexphant\Runtime\Runtime::available()) {
+            $this->workerOwner = \Nexphant\Runtime\Runtime::owners()->open(
+                \Nexphant\Core\Ownership\OwnerType::WORKER,
                 null,
                 ['pid' => getmypid(), 'started_at' => $this->startTime]
             );
@@ -93,7 +93,7 @@ class QueueWorker
      */
     private function processNextJob(): void
     {
-        $drain = \nexphant\Core\Drain\DrainController::instance();
+        $drain = \Nexphant\Core\Drain\DrainController::instance();
 
         if ($drain->isDraining() || $drain->isStopped()) {
             echo "[QueueWorker] Drain active, stopping job processing\n";

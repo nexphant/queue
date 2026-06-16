@@ -1,4 +1,4 @@
-# nexphant Queue
+# Nexphant Queue
 
 Background job processing for nexphant.
 

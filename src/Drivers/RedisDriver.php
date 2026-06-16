@@ -8,10 +8,10 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace nexphant\Queue\Drivers;
+namespace Nexphant\Queue\Drivers;
 
-use nexphant\Queue\QueueDriver;
-use nexphant\Queue\Job;
+use Nexphant\Queue\QueueDriver;
+use Nexphant\Queue\Job;
 
 class RedisDriver implements QueueDriver
 {
@@ -22,7 +22,7 @@ class RedisDriver implements QueueDriver
     private string $dataPrefix;
     private int $maxPayloadSize;
 
-    public function __construct(\Redis $redis, string $prefix = 'nexphant_queue', int $maxPayloadSize = 10485760)
+    public function __construct(\Redis $redis, string $prefix = 'NEXPHANT_queue', int $maxPayloadSize = 10485760)
     {
         $this->redis = $redis;
         $this->queueKey = $prefix . ':queue';
@@ -32,11 +32,11 @@ class RedisDriver implements QueueDriver
         $this->maxPayloadSize = $maxPayloadSize;
 
         // Track Redis connection
-        if (class_exists('\nexphant\Core\Resource\ResourceRegistry') && class_exists('\nexphant\Runtime\Runtime') && \nexphant\Runtime\Runtime::available()) {
-            \nexphant\Core\Resource\ResourceRegistry::instance()->track(
+        if (class_exists('\Nexphant\Core\Resource\ResourceRegistry') && class_exists('\Nexphant\Runtime\Runtime') && \Nexphant\Runtime\Runtime::available()) {
+            \Nexphant\Core\Resource\ResourceRegistry::instance()->track(
                 $redis,
                 'redis_connection',
-                \nexphant\Runtime\Runtime::context()->ownerId()
+                \Nexphant\Runtime\Runtime::context()->ownerId()
             );
         }
     }

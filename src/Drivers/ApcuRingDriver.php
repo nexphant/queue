@@ -1,16 +1,16 @@
 <?php
 
-namespace nexphant\Queue\Drivers;
+namespace Nexphant\Queue\Drivers;
 
-use nexphant\Queue\Job;
-use nexphant\Queue\QueueDriver;
+use Nexphant\Queue\Job;
+use Nexphant\Queue\QueueDriver;
 
 class ApcuRingDriver implements QueueDriver {
     private string $prefix;
     private int $maxPayloadSize;
     private int $scanLimit;
 
-    public function __construct(string $prefix = 'nexphant_queue_ring', int $maxPayloadSize = 10485760, int $scanLimit = 1024) {
+    public function __construct(string $prefix = 'NEXPHANT_queue_ring', int $maxPayloadSize = 10485760, int $scanLimit = 1024) {
         if (!extension_loaded('apcu') || !apcu_enabled()) {
             throw new \RuntimeException('APCu extension not available');
         }

@@ -1,8 +1,8 @@
 <?php
 
-namespace nexphant\Queue;
+namespace Nexphant\Queue;
 
-use nexphant\Runtime\Runtime;
+use Nexphant\Runtime\Runtime;
 
 class CoroutineConsumer
 {
