@@ -85,7 +85,7 @@ class Job
 
     public static function assertValidId(string $id): void
     {
-        if (!preg_match('/^[A-Za-z0-9._-]{1,128}$/', $id)) {
+        if (!preg_match('/^[A-Za-z0-9_-]{1,128}$/', $id)) {
             throw new \InvalidArgumentException('Invalid job id');
         }
     }
