@@ -22,10 +22,21 @@ class MemoryDriver implements QueueDriver
 {
     private array $jobs = [];
     private array $deadLetters = [];
+    private int $maxJobs;
+    private int $maxDeadLetters;
+
+    public function __construct(int $maxJobs = 10000, int $maxDeadLetters = 1000)
+    {
+        $this->maxJobs = max(1, $maxJobs);
+        $this->maxDeadLetters = max(1, $maxDeadLetters);
+    }
 
     public function push(Job $job): void
     {
         Job::assertValidId($job->id);
+        if (count($this->jobs) >= $this->maxJobs) {
+            throw new \OverflowException('MemoryDriver job queue full');
+        }
         $this->jobs[$job->id] = $job;
     }
 
@@ -79,6 +90,9 @@ class MemoryDriver implements QueueDriver
     public function pushDeadLetter(Job $job): void
     {
         Job::assertValidId($job->id);
+        if (count($this->deadLetters) >= $this->maxDeadLetters) {
+            array_shift($this->deadLetters);
+        }
         $this->deadLetters[$job->id] = $job;
     }
 
