@@ -66,6 +66,7 @@ class DatabaseDriver implements QueueDriver
                 WHERE status = 'pending' AND available_at <= ?
                 ORDER BY available_at ASC
                 LIMIT 1
+                FOR UPDATE SKIP LOCKED
             ");
 
             $stmt->execute([$now]);
